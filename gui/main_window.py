@@ -1,11 +1,20 @@
 import sys
 
-from PyQt6.QtCore import QSize, Qt, QCoreApplication
+from PyQt6.QtCore import QSize, Qt, QCoreApplication, QThread, pyqtSignal
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QMessageBox, 
                             QFileDialog, QHBoxLayout, QPushButton,
-                            QWidget, QFrame, QVBoxLayout, QGroupBox, QTextEdit, QProgressBar, QLabel, QTabWidget, QSplitter)
-from PyQt6.QtGui import QAction, QIcon
+                            QWidget, QFrame, QVBoxLayout, QGroupBox, QTextEdit, QProgressBar, QLabel, QTabWidget, QSplitter, QStatusBar)
+from PyQt6.QtGui import QAction, QIcon, QMovie
 
+class AlignmentThread(QThread):
+    progress = pyqtSignal(int)
+    finished = pyqtSignal()
+
+    def run(self):
+        for i in range(101):
+            self.progress.emit(i)
+            QThread.msleep(50)
+        self.finished.emit()
 # from logic import file_loader
 
 
@@ -20,6 +29,9 @@ class MainWindow(QMainWindow):
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QHBoxLayout()
+
+        #Status Bar
+        self.statusBar().showMessage("Ready")
 
         #Tab Widget for Sections
         self.tabs = QTabWidget()
@@ -40,6 +52,8 @@ class MainWindow(QMainWindow):
 
         self.load_wt_button = QPushButton("Load Wild Type FASTA")
         self.load_mutation_button = QPushButton("Load Mutated Sequence FASTA")
+        self.load_wt_button.setToolTip("Click to load a Wild Type FASTA file")
+        self.load_mutation_button.setToolTip("Click to load a Mutated FASTA file")
         self.load_wt_button.clicked.connect(lambda: self.load_fasta_file("WT"))
         self.load_mutation_button.clicked.connect(lambda: self.load_fasta_file("Mutant"))
 
@@ -85,8 +99,11 @@ class MainWindow(QMainWindow):
         #Alignment Tab Layout
         align_tab_layout = QVBoxLayout()
         self.progress_bar = QProgressBar()
+        self.loading_label = QLabel()
+        self.loading_label.hide()
         align_tab_layout.addWidget(QLabel("Alignment Progress:"))
         align_tab_layout.addWidget(self.progress_bar)
+        align_tab_layout.addWidget(self.loading_label)
         align_tab.setLayout(align_tab_layout)
 
         # menu bar
@@ -162,14 +179,17 @@ class MainWindow(QMainWindow):
             with open(pathname, 'r') as file:
                 sequence = file.read()
 
+            if not sequence.startswith(">"):
+                QMessageBox.warning(self, "Invalid File", "The selected file is not a valid FASTA file.")
+                return
+
             if sequence_type == "WT":
-                self.wt_sequence = sequence
-                self.wt_textbox.setPlainText(sequence)
-                QMessageBox.information(self, "Success", "Wild Type Sequence loaded successfully!")
+                self.wt_textbox.setText(sequence)
             else:
-                self.mutant_sequence = sequence
-                self.mutant_textbox.setPlainText(sequence)
-                QMessageBox.information(self, "Success", "Mutant sequence loaded successfully!")
+                self.mutant_textbox.setText(sequence)
+            
+            self.statusBar().showMessage(f"Loaded {sequence_type} sequence successfully")
+                
 
         except FileNotFoundError:
             QMessageBox.critical(self, "File Error", "The selected file could not be found")
@@ -179,11 +199,17 @@ class MainWindow(QMainWindow):
             QMessageBox.critical(self, "Error", f"An unexpected error occured {e}")
 
     def run_alignment(self):
-        self.progress_bar.setValue(0)
-        for i in range(101):
-            QCoreApplication.processEvents()
-            self.progress_bar.setValue(i)
-        QMessageBox.critical(self, "Success", "Alignment Completed!")
+         self.loading_label.show()
+         self.progress_bar.setValue(0)
+         self.thread = AlignmentThread()
+         self.thread.progress.connect(self.progress_bar.setValue)
+         self.thread.finished.connect(self.alignment_done)
+         self.thread.start()
+
+    def alignment_done(self):
+        self.loading_label.hide()
+        QMessageBox.information(self, "Success", "Alignment Completed!")
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
