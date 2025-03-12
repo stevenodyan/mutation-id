@@ -3,7 +3,7 @@ import sys
 from PyQt6.QtCore import QSize, Qt, QCoreApplication, QThread, pyqtSignal
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QMessageBox, 
                             QFileDialog, QHBoxLayout, QPushButton,
-                            QWidget, QFrame, QVBoxLayout, QGroupBox, QTextEdit, QProgressBar, QLabel, QTabWidget, QSplitter, QStatusBar)
+                            QWidget, QFrame, QVBoxLayout, QGroupBox, QTextEdit, QProgressBar, QLabel, QTabWidget, QSplitter, QStatusBar, QTableWidget, QTableWidgetItem, QCheckBox)
 from PyQt6.QtGui import QAction, QIcon, QMovie
 
 class AlignmentThread(QThread):
@@ -127,6 +127,7 @@ class MainWindow(QMainWindow):
         run_menu.addAction(alignment_action)
         menu_bar.addAction(theme_action)
 
+
         #Apply Styles
         self.setStyleSheet("""
             QPushButton {
@@ -174,6 +175,7 @@ class MainWindow(QMainWindow):
         pathname, _ = QFileDialog.getOpenFileName(self, "Open File", "", "FASTA Files (*.fasta)")
         if not pathname:
             return
+        
         
         try:
             with open(pathname, 'r') as file:
