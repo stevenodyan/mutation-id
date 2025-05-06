@@ -49,15 +49,15 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("mutation id")
         self.setMinimumSize(1312, 650)
         #Dark Mode
-        container = QWidget()
-        layout = QHBoxLayout(container)
+        #container = QWidget()
+        #layout = QHBoxLayout(container)
         # stacked widget for switching between views
         self.main_widget = QStackedWidget()
         self.setCentralWidget(self.main_widget)
 
         # Set up side panel (Note:connected for dark mode toggle)
-        self.side_panel = SidePanel()
-        self.side_panel.dark_mode_toggled.connect(self.toggle_dark_mode)
+        #self.side_panel = SidePanel()
+        #self.side_panel.dark_mode_toggled.connect(self.toggle_dark_mode)
 
         # view on entry of program
         welcome_view = WelcomeView(self)
@@ -67,16 +67,16 @@ class MainWindow(QMainWindow):
 
         # Layout: Add both side panel and main widget to a container
         
-        layout.addWidget(self.side_panel)
-        layout.addWidget(self.main_widget)
-        self.setCentralWidget(container)
+        #layout.addWidget(self.side_panel)
+        #layout.addWidget(self.main_widget)
+        #self.setCentralWidget(container)
 
             
-        def toggle_dark_mode(self, enabled):
-            if enabled:
-                self.setStyleSheet(DARK_THEME)
-            else:
-                self.setStyleSheet("")
+        #def toggle_dark_mode(self, enabled):
+            #if enabled:
+                #self.setStyleSheet(DARK_THEME)
+            #else:
+                #self.setStyleSheet("")
 
 
 

@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QStackedWidget, QPushButton, QWidget
 from .graph_button import GraphButton
+from PyQt6.QtGui import QIcon
+from PyQt6.QtCore import QSize
 from .graph import Graph
 from logic import export_png_graph
 
@@ -46,7 +48,11 @@ class Graph_Area(QFrame):
 
         header_layout.addStretch(1)
 
-        save_graph_button = QPushButton('Save Graph')
+        save_graph_button = QPushButton()
+        save_graph_button.setIcon(QIcon('assets/Save_Graph.png'))
+        save_graph_button.setToolTip("Save Graph")
+        save_graph_button.setIconSize(QSize(24,24))
+        save_graph_button.setFixedSize(32,32)
         save_graph_button.clicked.connect(lambda: export_png_graph(main_window,
                                                                    self.graph_switcher.currentWidget()))
         

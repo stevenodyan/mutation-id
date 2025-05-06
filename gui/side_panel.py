@@ -4,11 +4,11 @@ from PyQt6.QtCore import pyqtSignal, QObject
 import os
 
 class SidePanel(QFrame):
-    dark_mode_toggled = pyqtSignal(bool)  # Signal to notify about dark mode toggle
+    #dark_mode_toggled = pyqtSignal(bool)  # Signal to notify about dark mode toggle
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.dark_mode_enabled = False
+    def __init__(self):
+        super().__init__()
+        #self.dark_mode_enabled = False
 
         self.setFrameShape(QFrame.Shape.Box)
         self.setFixedWidth(250)
@@ -25,14 +25,14 @@ class SidePanel(QFrame):
         self.side_panel_layout.addWidget(self.wt_widget)
         self.side_panel_layout.addWidget(self.mt_widget)
 
-        self.toggle_button = QPushButton("🌓 Toggle Dark Mode")
-        self.toggle_button.clicked.connect(self.handle_toggle)
+        #self.toggle_button = QPushButton("🌓 Toggle Dark Mode")
+        #self.toggle_button.clicked.connect(self.handle_toggle)
 
-        self.side_panel_layout.addWidget(self.toggle_button)
-        self.setLayout(self.side_panel_layout)
+        #self.side_panel_layout.addWidget(self.toggle_button)
+        #self.setLayout(self.side_panel_layout)
 
     
-    def handle_toggle(self):
-            self.dark_mode_enabled = not self.dark_mode_enabled
-            self.dark_mode_toggled.emit(self.dark_mode_enabled)
+    #def handle_toggle(self):
+            #self.dark_mode_enabled = not self.dark_mode_enabled
+            #self.dark_mode_toggled.emit(self.dark_mode_enabled)
 
