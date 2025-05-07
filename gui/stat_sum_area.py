@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QFrame, QHBoxLayout, QTableWidgetItem, QTableWidget, QAbstractItemView, QHeaderView, QWidget
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QTableWidgetItem, QTableWidget, QAbstractItemView, QHeaderView, QWidget, QSizePolicy
 from PyQt6.QtCore import Qt, QPoint
 from .graph_area import Graph_Area
 from logic import get_gc_content, get_base_proportion, find_repeats, get_mutation_types
@@ -10,15 +10,18 @@ class StatSummary(QWidget):
         self.inner_widget_layout = QHBoxLayout()
         self.inner_widget_layout.setContentsMargins(5, 5, 5, 5)
 
-        summary = QFrame()
-        summary.setFixedWidth(1000)
-        summary.setFrameShape(QFrame.Shape.Box)
-        summary.setFrameShadow(QFrame.Shadow.Sunken)
+        #summary = QFrame()
+        #summary.setFixedWidth(1000)
+        #summary.setMinimumWidth(800)
+        #summary.setFrameShape(QFrame.Shape.Box)
+        #summary.setFrameShadow(QFrame.Shadow.Sunken)
         summary_layout = QHBoxLayout()
+        summary_layout.setContentsMargins(10,10,10,10)
+        summary_layout.setSpacing(5)
 
-        table = QTableWidget(summary)
+        table = QTableWidget()
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        table.setFixedWidth(340)
+        #table.setFixedWidth(340)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
 
         table.setRowCount(14)
@@ -27,7 +30,7 @@ class StatSummary(QWidget):
         cell_height = table.verticalHeader().defaultSectionSize()
         header_height = table.horizontalHeader().height()
 
-        table.setFixedHeight(2 + header_height + cell_height * 14)
+        #table.setFixedHeight(2 + header_height + cell_height * 14)
 
         # length
         table.setItem(0, 0, QTableWidgetItem("GC Content"))
@@ -76,11 +79,14 @@ class StatSummary(QWidget):
 
         self.graph = Graph_Area(main_window, sequence_wt, sequence_mt, mutation, seqid_wt, seqid_mt)
 
-        summary_layout.addWidget(table)
-        summary_layout.addStretch(1)
-        summary_layout.addWidget(self.graph)
-        summary.setLayout(summary_layout)
+        table.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        self.graph.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
-        self.inner_widget_layout.addWidget(summary)
-        self.inner_widget_layout.addStretch(1)
-        self.setLayout(self.inner_widget_layout)
+        summary_layout.addWidget(table, stretch=2)
+        #summary_layout.addStretch(1)
+        summary_layout.addWidget(self.graph, stretch=3)
+        #summary.setLayout(summary_layout)
+
+        #self.inner_widget_layout.addWidget(summary)
+        #self.inner_widget_layout.addStretch(1)
+        self.setLayout(summary_layout)
